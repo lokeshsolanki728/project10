@@ -38,7 +38,7 @@ public class UserDAOImpl extends BaseDAOImpl<UserDTO> implements UserDAOInt {
 
 	@Override
 	protected List<Predicate> getWhereClause(UserDTO dto, CriteriaBuilder builder, Root<UserDTO> qRoot) {
-
+    System.out.println("getwhereclause in userdaoimpl");
 		// Create where conditions
 		List<Predicate> whereCondition = new ArrayList<Predicate>();
 
@@ -65,6 +65,10 @@ public class UserDAOImpl extends BaseDAOImpl<UserDTO> implements UserDAOInt {
 			whereCondition.add(builder.equal(qRoot.get("status"), dto.getStatus()));
 		}
 
+		if (!isZeroNumber(dto.getRoleId())) {
+
+			whereCondition.add(builder.equal(qRoot.get("roleId"), dto.getRoleId()));
+		}
 		if (!isZeroNumber(dto.getRoleId())) {
 
 			whereCondition.add(builder.equal(qRoot.get("roleId"), dto.getRoleId()));

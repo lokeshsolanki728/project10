@@ -26,6 +26,7 @@ public class RoleDAOImpl extends BaseDAOImpl<RoleDTO> implements RoleDAOInt {
 	@Override
 	protected List<Predicate> getWhereClause(RoleDTO dto, CriteriaBuilder builder, Root<RoleDTO> qRoot) {
 		// Create where conditions
+		System.out.println("getwhereClause inside RoleDao Impl");
 		List<Predicate> whereCondition = new ArrayList<Predicate>();
 
 		if (!isEmptyString(dto.getName())) {

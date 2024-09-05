@@ -3,8 +3,8 @@ package com.rays.common;
 import java.lang.reflect.Method;
 
 /**
- * Contains generic attributes of a form. It is extended by all form beans.
- * Lokesh Solanki 
+ * Contains generic attributes of a form. It is extended by all form beans. Lokesh Solanki
+ * Solanki
  */
 
 public class BaseForm {
@@ -138,9 +138,10 @@ public class BaseForm {
 	 * @param dto
 	 * @return
 	 */
+
 	public <T extends BaseDTO> T initDTO(T dto) {
 		if (id != null && id > 0) {
-		dto.setId(id);
+			dto.setId(id);
 		} else {
 			dto.setId(null);
 		}
@@ -158,8 +159,7 @@ public class BaseForm {
 	public void populate(BaseDTO bDto) {
 
 	}
-	
-	
+
 	@Override
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();

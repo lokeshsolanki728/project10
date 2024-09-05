@@ -38,8 +38,9 @@ import com.rays.form.UserForm;
 import com.rays.service.RoleServiceInt;
 import com.rays.service.UserServiceInt;
 
+
 /**
- * Lokesh Solanki
+ * @author Lokesh Solanki
  *
  */
 @RestController
@@ -63,7 +64,7 @@ public class UserCtl extends BaseCtl<UserForm, UserDTO, UserServiceInt> {
 
 	@GetMapping("/preload")
 	public ORSResponse preload() {
-		System.out.println("inside preload Paras");
+		System.out.println("inside preload Lokesh Solanki in userctl");
 		ORSResponse res = new ORSResponse(true);
 		RoleDTO dto = new RoleDTO();
 		dto.setStatus(RoleDTO.ACTIVE);
@@ -124,7 +125,7 @@ public class UserCtl extends BaseCtl<UserForm, UserDTO, UserServiceInt> {
 	 */
 	@PostMapping("changepassword")
 	public ORSResponse changePassword(@RequestBody @Valid ChangePasswordForm form, BindingResult bindingResult) {
-		System.out.println("Inside changepassword in userctl......Paras");
+		System.out.println("Inside changepassword in userctl......Lokesh");
 
 		ORSResponse res = validate(bindingResult);
 
@@ -210,9 +211,10 @@ public class UserCtl extends BaseCtl<UserForm, UserDTO, UserServiceInt> {
 	public ORSResponse uploadPic(@PathVariable Long userId, @RequestParam("file") MultipartFile file,
 			HttpServletRequest req) {
 
-		System.out.println("User ID id -------------- Lokesh Solanki" + userId);
+		System.out.println("User ID id --------------Lokesh Solanki" + userId);
 
 		UserDTO userDTO = baseService.findById(userId, userContext);
+		System.out.println("Lokesh Solanki>>>>>>>>>>>>>..."+userId);
 
 		AttachmentDTO doc = new AttachmentDTO(file);
 
@@ -220,10 +222,10 @@ public class UserCtl extends BaseCtl<UserForm, UserDTO, UserServiceInt> {
 		System.out.println(doc.getDescription() + "description");
 
 		doc.setPath(req.getServletPath());
-		System.out.println(doc.getPath() + "path-----Paras");
+		System.out.println(doc.getPath() + "path-----rahul");
 
 		doc.setUserId(userId);
-		System.out.println(doc.getUserId() + "id-----Paras");
+		System.out.println(doc.getUserId() + "id-----rahul");
 
 		if (userDTO.getImageId() != null && userDTO.getImageId() > 0) {
 			doc.setId(userDTO.getImageId());
@@ -231,6 +233,8 @@ public class UserCtl extends BaseCtl<UserForm, UserDTO, UserServiceInt> {
 		System.out.println("before calling save");
 
 		Long imageId = attachmentService.save(doc, userContext);
+		
+		System.out.println("Solanki>>>>>>>>>>>"+imageId);
 
 		System.out.println("after save");
 
@@ -276,7 +280,7 @@ public class UserCtl extends BaseCtl<UserForm, UserDTO, UserServiceInt> {
 				out.write(attachmentDTO.getDoc());
 				out.close();
 
-				System.out.println("Profile pic......Paras");
+				System.out.println("Profile pic......Lokesh Solanki");
 			} else {
 				response.getWriter().write("ERROR: File not found");
 			}
@@ -360,4 +364,3 @@ public class UserCtl extends BaseCtl<UserForm, UserDTO, UserServiceInt> {
 	}
 
 }
-	

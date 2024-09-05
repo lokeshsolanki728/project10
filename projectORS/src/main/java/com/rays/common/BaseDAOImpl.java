@@ -109,17 +109,17 @@ public abstract class BaseDAOImpl<T extends BaseDTO> implements BaseDAOInt<T> {
 		if (dto.isGroupFilter()) {
 			whereClause.add(builder.equal(qRoot.get("orgId"), dto.getOrgId()));
 		}
-		System.out.println(" isgroup skipped......Amit");
+		System.out.println(" isgroup skipped......Lokesh Solanki");
 		cq.where(whereClause.toArray(new Predicate[whereClause.size()]));
 
 		List<Order> orderBys = getOrderByClause(dto, builder, qRoot);
 
-		System.out.println("after getOrder By clause........Amit");
+		System.out.println("after getOrder By clause........Lokesh Solanki");
 		cq.orderBy(orderBys.toArray(new Order[orderBys.size()]));
 
-		System.out.println("After order by clause.......Amit ");
+		System.out.println("After order by clause.......Lokesh Solanki ");
 		TypedQuery<T> query = entityManager.createQuery(cq);
-		System.out.println("createCriteria end here---....Amit");
+		System.out.println("createCriteria end here---....rahul");
 		return query;
 
 	}
@@ -193,7 +193,7 @@ public abstract class BaseDAOImpl<T extends BaseDTO> implements BaseDAOInt<T> {
 		populate(dto, userContext);
 		System.out.println("Dto start ");
 		System.out.println(dto);
-		System.out.println("before calling persist method in base dao......Amit");
+		System.out.println("before calling persist method in base dao......Lokesh");
 		entityManager.persist(dto);
 
 		return dto.getId();
@@ -311,7 +311,7 @@ public abstract class BaseDAOImpl<T extends BaseDTO> implements BaseDAOInt<T> {
 	protected List<Order> getOrderByClause(T dto, CriteriaBuilder builder, Root<T> qRoot) {
 
 		// Apply Order by clause
-		System.out.println("baseDAO in getOrderByClause.......Amit ");
+		System.out.println("baseDAO in getOrderByClause.......Lokesh Solanki ");
 		LinkedHashMap<String, String> map = dto.orderBY();
 
 		List<Order> orderBys = new ArrayList<Order>();

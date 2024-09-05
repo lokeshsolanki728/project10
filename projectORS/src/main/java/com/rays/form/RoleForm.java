@@ -40,6 +40,7 @@ public class RoleForm extends BaseForm {
 	dto.setDescription(description);
 	System.out.println(dto.getDescription()+"___________");
 	dto.setName(name);
+	System.out.println(dto.getName()+"___________");
 	return dto;
 	
 }

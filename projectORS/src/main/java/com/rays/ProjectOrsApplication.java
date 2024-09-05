@@ -11,16 +11,18 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.rays.common.FrontCtl;
+import com.rays.common.FrontCtl;		
 
 /**
  * Lokesh Solanki
  *
  */
+
+
 @SpringBootApplication
 public class ProjectOrsApplication extends SpringBootServletInitializer {
 
-	@Autowired
+	@Autowired	
 	private Environment env;
 
 	@Autowired
@@ -59,7 +61,7 @@ public class ProjectOrsApplication extends SpringBootServletInitializer {
 
 			@Override
 			public void addInterceptors(InterceptorRegistry registry) {
-				registry.addInterceptor(frontCtl).addPathPatterns("/**").excludePathPatterns("/Auth/**","/User/profilePic/**", "/Shopping/profilePic/**");
+				registry.addInterceptor(frontCtl).addPathPatterns("/**").excludePathPatterns("/Auth/**","/User/profilePic/**");
 			}
 
 			/*

@@ -1,3 +1,4 @@
+
 package com.rays.common;
 
 import java.util.Date;
@@ -21,10 +22,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.rays.dto.MarksheetDTO;
 import com.rays.dto.UserDTO;
 
+/**
+ * Base controller class contains get, search, save, delete REST APIs
+ * 
+ * Lokesh Solanki
+ */
 public abstract class BaseCtl<F extends BaseForm, T extends BaseDTO, S extends BaseServiceInt<T>> {
 
+	/**
+	 * Form operations
+	 */
 	protected static final String OP_SAVE = "Save";
 	protected static final String OP_NEW = "New";
 	protected static final String OP_DELETE = "Delete";
@@ -42,8 +52,16 @@ public abstract class BaseCtl<F extends BaseForm, T extends BaseDTO, S extends B
 	@Value("${page.size}")
 	private int pageSize = 0;
 
+	/**
+	 * Contains context of logged-in user
+	 */
 	protected UserContext userContext = null;
 
+	/**
+	 * Get user context from session
+	 * 
+	 * @param session
+	 */
 	@ModelAttribute
 	public void setUserContext(HttpSession session) {
 		System.out.println("inside setUserContext  inside BaseCtl --");
@@ -58,8 +76,14 @@ public abstract class BaseCtl<F extends BaseForm, T extends BaseDTO, S extends B
 			dto.setOrgName("root");
 			userContext = new UserContext(dto);
 		}
+
 	}
 
+	/**
+	 * Default get mapping
+	 * 
+	 * @return
+	 */
 	@GetMapping
 	public ORSResponse get() {
 		System.out.println("BaseCtl Get() method run");
@@ -68,53 +92,77 @@ public abstract class BaseCtl<F extends BaseForm, T extends BaseDTO, S extends B
 		return res;
 	}
 
+	/**
+	 * Get entity by primary key ID
+	 * 
+	 * @param id
+	 * @return
+	 */
 	@GetMapping("get/{id}")
 	public ORSResponse get(@PathVariable long id) {
-		System.out.println("BaseCtl Get() method run.......Amit");
+
+		System.out.println("BaseCtl Get() method run.......Lokesh Solanki");
+
 		ORSResponse res = new ORSResponse(true);
 		T dto = baseService.findById(id, userContext);
 
 		if (dto != null) {
 			res.addData(dto);
 		} else {
+
 			res.setSuccess(false);
+			
 			res.addMessage("Record not found");
 		}
 		System.out.println("Edit response :" + res);
 		return res;
 	}
 
-	@GetMapping("delete/{id}")
-	public ORSResponse delete(@PathVariable long id) {
-		System.out.println("BaseCtl Delete() method run........Amit");
-		ORSResponse res = new ORSResponse(true);
-		try {
-			T dto = baseService.delete(id, userContext);
-			res.addData(dto);
-			System.out.println("Record Deleted Successfully");
-		} catch (Exception e) {
-			res.setSuccess(false);
-			res.addMessage(e.getMessage());
-		}
-		return res;
-	}
+	/**
+	 * Delete entity by primary key ID
+	 * 
+	 * @param id
+	 * @return
+	 */
+	/*
+	 * @GetMapping("delete/{id}") public ORSResponse (@PathVariable long id) {
+	 * System.out.println("BaseCtl Delete() method run........Lokesh Solanki"); ORSResponse
+	 * res = new ORSResponse(true); try { T dto = baseService.delete(id,
+	 * userContext); res.addData(dto);
+	 * System.out.println("Record Deleted Successfully"); } catch (Exception e) {
+	 * res.setSuccess(false); res.addMessage(e.getMessage()); } return res; }
+	 */
 
 	@PostMapping("deleteMany/{ids}")
-	public ORSResponse deleteMany(@PathVariable String[] ids, @RequestParam("pageNo") String pageNo,
-			@RequestBody F form) {
-		System.out.println("BaseCtl DeleteMany() method....Amit... run");
+	public ORSResponse deleteMany(@PathVariable String[] ids, @RequestParam("pageNo") String pageNo, @RequestBody F form) {
+		System.out.println("BaseCtl DeleteMany() method....Rahul... run");
 		ORSResponse res = new ORSResponse(true);
 		try {
+
+			// System.out.println("deleteMany Page No is ******---" + pageNo);
+
 			for (String id : ids) {
 				System.out.println("Records To be Deleted :: " + id);
 				baseService.delete(Long.parseLong(id), userContext);
+
 			}
 			T dto = (T) form.getDto();
+			// System.out.println("dto ::" + dto.getClass());
+			// if(dto!=null)
+
 			List<T> list = baseService.search(dto, Integer.parseInt(pageNo), pageSize, userContext);
-			res.addData(list);
+
+			// System.out.println("List ::" + list);
+
+//			for (T id : list) {
+//				System.out.println("Records  :: " + id.toString());				
+//			}
+
+			res.addData(baseService.search(dto, Integer.parseInt(pageNo), pageSize, userContext));
 			res.setSuccess(true);
 			res.addMessage("Records Deleted Successfully");
-			System.out.println("Records Deleted Successfully by Amit");
+			System.out.println("Records Deleted Successfully by Rahul");
+
 		} catch (Exception e) {
 			res.setSuccess(false);
 			res.addMessage(e.getMessage());
@@ -122,9 +170,17 @@ public abstract class BaseCtl<F extends BaseForm, T extends BaseDTO, S extends B
 		return res;
 	}
 
+	/**
+	 * Search entities by form attributes
+	 * 
+	 * @param form
+	 * @return
+	 */
 	@RequestMapping(value = "/search", method = { RequestMethod.GET, RequestMethod.POST })
 	public ORSResponse search(@RequestBody F form) {
+
 		System.out.println("BaseCtl Search Running");
+		// Calculate next page number
 		String operation = form.getOperation();
 		int pageNo = form.getPageNo();
 
@@ -134,6 +190,7 @@ public abstract class BaseCtl<F extends BaseForm, T extends BaseDTO, S extends B
 			pageNo--;
 		}
 
+		// 0 is first page index
 		pageNo = (pageNo < 0) ? 0 : pageNo;
 		form.setPageNo(pageNo);
 		System.out.println("Page No is :: " + pageNo + "   Page size is :: " + pageSize);
@@ -145,12 +202,21 @@ public abstract class BaseCtl<F extends BaseForm, T extends BaseDTO, S extends B
 
 	@RequestMapping(value = "/search/{pageNo}", method = { RequestMethod.GET, RequestMethod.POST })
 	public ORSResponse search(@RequestBody F form, @PathVariable int pageNo) {
+
+		/* Called on loading, next, previous and search operation * */
 		System.out.println("BaseCtl Search method with pageNo :: " + pageNo + "   Page size is :: " + pageSize);
+
+		// 0 is first page index
 		pageNo = (pageNo < 0) ? 0 : pageNo;
+
 		System.out.println("Operation :: " + form.getOperation());
+
 		T dto = (T) form.getDto();
+
 		ORSResponse res = new ORSResponse(true);
+
 		res.addData(baseService.search(dto, pageNo, pageSize, userContext));
+
 		List nextList = baseService.search(dto, pageNo + 1, pageSize, userContext);
 		res.addResult("nextList", nextList.size());
 		return res;
@@ -158,34 +224,45 @@ public abstract class BaseCtl<F extends BaseForm, T extends BaseDTO, S extends B
 
 	@PostMapping("/save")
 	public ORSResponse save(@RequestBody @Valid F form, BindingResult bindingResult) {
-		System.out.println("228save() run in BaseCtl :: +Amit " + form);
+		System.out.println("228save() run in BaseCtl :: +Lokesh " + form);
 		ORSResponse res = validate(bindingResult);
 
-		if (!res.isSuccess()) {
+		if (res.isSuccess() == false) {
 			return res;
 		}
 		try {
 			T dto = (T) form.getDto();
 			if (dto.getId() != null && dto.getId() > 0) {
 				T existDto1 = (T) baseService.findByUniqueKey(dto.getUniqueKey(), dto.getUniqueValue(), userContext);
-				if (existDto1 != null && !dto.getId().equals(existDto1.getId())) {
-					res.addMessage("Login Id already exist");
+				if (existDto1 != null && dto.getId() != existDto1.getId()) {
+					System.out.println("inside exisdto");
+					System.out.println("Lokesh Solanki>>>>>>"+dto.getId());
+					System.out.println("Lokesh Solanki>>>>>>"+existDto1.getId());
+					res.addMessage(dto.getLabel() + " already exist");
+					res.addData(dto);
 					res.setSuccess(false);
 					return res;
 				}
 				baseService.update(dto, userContext);
+
 			} else {
-				if (dto.getUniqueKey() != null && !dto.getUniqueKey().isEmpty()) {
+				System.out.println("before calling add of baseservice");
+				if (dto.getUniqueKey() != null && !dto.getUniqueKey().equals("")) {
 					T existDto = (T) baseService.findByUniqueKey(dto.getUniqueKey(), dto.getUniqueValue(), userContext);
+					System.out.println("JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ");
 					if (existDto != null) {
-						res.addMessage("Login Id already exist");
+						System.out.println("247----------->" + existDto);
+						res.addMessage(dto.getLabel() + " already exist");
 						res.setSuccess(false);
 						return res;
 					}
 				}
+				System.out.println("Lokesh SolankiLokesh Solanki>>>>>>>"+dto.getId());
 				baseService.add(dto, userContext);
+				System.out.println("SolankiSolanki>>>>>>>"+dto.getId());
 			}
 			res.addData(dto.getId());
+			
 		} catch (Exception e) {
 			res.setSuccess(false);
 			res.addMessage(e.getMessage());
@@ -194,15 +271,30 @@ public abstract class BaseCtl<F extends BaseForm, T extends BaseDTO, S extends B
 		return res;
 	}
 
+	/**
+	 * Gets input error messages and put into REST response
+	 * 
+	 * @param bindingResult
+	 * @return
+	 */
 	public ORSResponse validate(BindingResult bindingResult) {
 		ORSResponse res = new ORSResponse(true);
+		System.out.println("inside the validate method of baseCtl");
 		if (bindingResult.hasErrors()) {
+			System.out.println("BaseCtl ki validate ke error block me");
 			res.setSuccess(false);
-			Map<String, String> errors = new HashMap<>();
+
+			Map<String, String> errors = new HashMap<String, String>();
+
 			List<FieldError> list = bindingResult.getFieldErrors();
-			list.forEach(e -> errors.put(e.getField(), e.getDefaultMessage()));
+			// Lambda expression Java 8 feature
+			list.forEach(e -> {
+				errors.put(e.getField(), e.getDefaultMessage());
+				System.out.println("Field :: " + e.getField() + "  Message :: " + e.getDefaultMessage());
+			});
 			res.addInputErrors(errors);
 		}
 		return res;
+
 	}
 }

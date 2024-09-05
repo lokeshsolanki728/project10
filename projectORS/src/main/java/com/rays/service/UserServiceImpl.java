@@ -60,6 +60,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDAOInt> implem
 			UserContext userContext = new UserContext(dto);
 			if (password.equals(dto.getPassword())) {
 				dto.setLastLogin(new Timestamp((new Date()).getTime()));
+				
 				dto.setUnsucessfullLoginAttempt(0);
 				update(dto, userContext);
 				return dto;
